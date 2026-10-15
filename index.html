@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통합사회 20제 핵심 퀴즈</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* 부드러운 화면 전환 애니메이션 */
+        .fade-enter {
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        .fade-exit {
+            animation: fadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-15px); }
+        }
+
+        /* 커스텀 라디오 버튼 스타일 */
+        input[type="radio"] {
+            display: none;
+        }
+
+        .option-card {
+            transition: all 0.2s ease-in-out;
+        }
+
+        input[type="radio"]:checked + .option-card {
+            border-color: #8b5cf6; /* violet-500 */
+            background-color: #f5f3ff; /* violet-50 */
+            box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.1), 0 2px 4px -1px rgba(139, 92, 246, 0.06);
+            transform: translateY(-2px);
+        }
+
+        input[type="radio"]:checked + .option-card .option-marker {
+            background-color: #8b5cf6;
+            color: white;
+            border-color: #8b5cf6;
+        }
+
+        /* 프로그레스 바 트랜지션 */
+        #progress-fill {
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 스크롤바 커스텀 (결과 화면용) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 bg-slate-50 min-h-screen flex items-center justify-center p-4 sm:p-6 relative">
+    
+    <!-- 배경 장식 (그라데이션 블롭) -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-violet-200/50 blur-3xl"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-200/50 blur-3xl"></div>
+    </div>
+
+    <!-- 메인 컨테이너 -->
+    <div id="app-container" class="w-full max-w-3xl bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden">
+        
+        <!-- ================= [1] 시작 화면 ================= -->
+        <div id="screen-start" class="p-10 md:p-16 text-center fade-enter">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white shadow-lg shadow-indigo-200 mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">통합사회 마스터 퀴즈</h1>
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                학습자료에 기반한 인권 보장, 헌법, 사회 정의, 시장경제에 대한 20개의 핵심 문제입니다.<br>
+                <span class="font-semibold text-indigo-600">총 100점 만점 (문항당 5점)</span>
+            </p>
+            <button onclick="startQuiz()" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all bg-slate-900 rounded-full hover:bg-slate-800 hover:shadow-lg hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-slate-200">
+                퀴즈 시작하기
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- ================= [2] 퀴즈 화면 ================= -->
+        <div id="screen-quiz" class="hidden flex-col h-full fade-enter">
+            <!-- 헤더 & 프로그레스 -->
+            <div class="px-8 pt-8 pb-4 border-b border-slate-100">
+                <div class="flex justify-between items-end mb-4">
+                    <h2 class="text-sm font-bold text-violet-600 uppercase tracking-wider">Question <span id="current-q-num" class="text-lg">1</span> <span class="text-slate-400 text-xs normal-case">/ 20</span></h2>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2.5">
+                    <div id="progress-fill" class="bg-gradient-to-r from-violet-500 to-indigo-500 h-2.5 rounded-full" style="width: 5%"></div>
+                </div>
+            </div>
+
+            <!-- 문제 영역 -->
+            <div class="px-8 py-8 flex-grow">
+                <h3 id="question-text" class="text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-8">문제 텍스트가 여기에 표시됩니다.</h3>
+                
+                <!-- 옵션 폼 -->
+                <form id="options-form" class="space-y-4">
+                    <!-- JS로 동적 생성됨 -->
+                </form>
+
+                <!-- 경고 메시지 -->
+                <div id="toast-msg" class="hidden mt-6 p-4 bg-rose-50 text-rose-600 rounded-xl text-sm font-medium flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    답을 선택해주세요.
+                </div>
+            </div>
+
+            <!-- 하단 네비게이션 -->
+            <div class="px-8 py-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+                <button id="btn-prev" onclick="prevQuestion()" class="px-6 py-3 text-slate-600 font-medium rounded-xl hover:bg-slate-200 transition-colors hidden">
+                    이전
+                </button>
+                <div class="flex-grow"></div>
+                <button id="btn-next" onclick="nextQuestion()" class="inline-flex items-center px-8 py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-transform hover:-translate-y-0.5 shadow-md shadow-slate-200">
+                    다음 문항
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <button id="btn-submit" onclick="submitQuiz()" class="hidden inline-flex items-center px-8 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl hover:from-violet-700 hover:to-indigo-700 transition-transform hover:-translate-y-0.5 shadow-lg shadow-indigo-200">
+                    제출 및 결과 보기
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= [3] 결과 화면 ================= -->
+        <div id="screen-result" class="hidden flex-col h-full max-h-[90vh]">
+            
+            <!-- 점수 헤더 -->
+            <div class="px-8 pt-10 pb-8 text-center bg-slate-900 text-white relative overflow-hidden">
+                <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CgkJPGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9IiNmZmYiLz4KCTwvc3ZnPg==')]"></div>
+                <div class="relative z-10">
+                    <h2 class="text-xl text-slate-300 font-medium mb-2">당신의 점수는</h2>
+                    <div class="text-6xl md:text-8xl font-black mb-4 tracking-tighter" id="final-score">100<span class="text-3xl text-slate-400 font-medium ml-1">점</span></div>
+                    <p class="text-lg font-medium" id="score-message">완벽합니다! 수고하셨습니다.</p>
+                </div>
+            </div>
+
+            <!-- 해설 리스트 (스크롤 영역) -->
+            <div class="px-6 py-6 overflow-y-auto bg-slate-50" style="max-height: 50vh;" id="review-list">
+                <!-- JS로 동적 생성됨 -->
+            </div>
+
+            <!-- 하단 버튼 -->
+            <div class="px-8 py-6 bg-white border-t border-slate-100 text-center">
+                <button onclick="location.reload()" class="inline-flex items-center px-8 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                    </svg>
+                    처음부터 다시 풀기
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 로직 스크립트 -->
+    <script>
+        // 문제 데이터 (20문항)
+        const quizData = [
+            {
+                q: "인권의 특성 중 '국가나 다른 사람이 함부로 빼앗거나 침해할 수 없는 권리'를 의미하는 것은?",
+                options: ["천부적 권리", "보편적 권리", "불가침의 권리", "항구적 권리"],
+                ans: 2, // 0-based index: 2 means "불가침의 권리"
+                exp: "인권은 타인이나 국가가 함부로 침해할 수 없는 불가침의 권리입니다."
+            },
+            {
+                q: "영국에서 국왕의 전제 정치에 반대하여 의회의 동의를 받도록 규정하며 권력을 견제한 혁명은?",
+                options: ["프랑스 혁명", "명예혁명", "미국 독립 혁명", "산업 혁명"],
+                ans: 1,
+                exp: "명예혁명은 국왕의 권력 행사 시 의회의 동의를 받도록 한 영국의 시민혁명입니다."
+            },
+            {
+                q: "영국의 노동자들이 선거권 확대를 요구하며 인민헌장을 배포한 운동은?",
+                options: ["여성 참정권 운동", "흑인 민권 운동", "차티스트 운동", "인클로저 운동"],
+                ans: 2,
+                exp: "차티스트 운동은 영국 노동자들의 선거권 획득 운동입니다."
+            },
+            {
+                q: "국가가 사회적 약자를 보호해야 한다는 인식이 확산되면서 '사회권'을 최초로 명시한 헌법은?",
+                options: ["미국 연방 헌법", "프랑스 인권 선언", "바이마르 헌법", "영국 권리장전"],
+                ans: 2,
+                exp: "독일의 바이마르 헌법은 세계 최초로 2세대 인권인 사회권을 명시했습니다."
+            },
+            {
+                q: "카렐 바작의 인권 3세대 중 인종 차별, 국가 간 빈부 격차 해결을 위한 전 지구적 차원의 집단적 권리는?",
+                options: ["1세대 인권", "2세대 인권", "3세대 인권", "4세대 인권"],
+                ans: 2,
+                exp: "3세대 인권(연대권)은 인류 공동의 노력이 필요한 전 지구적 권리입니다."
+            },
+            {
+                q: "국제 경기에서 할랄 음식이나 채식을 제공하는 등 종교에 따른 식문화를 보장하는 것과 가장 관련 깊은 현대 사회의 인권은?",
+                options: ["주거권", "안전권", "환경권", "문화권"],
+                ans: 3,
+                exp: "성별, 종교 등에 관계없이 고유한 문화를 보장받을 권리는 문화권입니다."
+            },
+            {
+                q: "국가 기관 형성과 의사 결정에 참여할 수 있는 권리로 선거권, 공무담임권 등이 포함되는 기본권은?",
+                options: ["자유권", "사회권", "참정권", "청구권"],
+                ans: 2,
+                exp: "국가의 정치적 의사 결정에 참여할 수 있는 권리를 참정권이라고 합니다."
+            },
+            {
+                q: "헌법상 기본권을 제한할 수 있는 목적이 아닌 것은?",
+                options: ["국가 안전 보장", "질서 유지", "공공복리", "국가 권력 강화"],
+                ans: 3,
+                exp: "기본권은 국가 안전 보장, 질서 유지, 공공복리를 위해서만 법률로 제한할 수 있습니다."
+            },
+            {
+                q: "시민 불복종의 조건 중 '합법적인 수단을 사용하였으나 인권 회복이 이루어지지 않은 경우에 선택해야 한다'는 조건은?",
+                options: ["공공성", "비폭력성", "처벌 감수", "최후 수단성"],
+                ans: 3,
+                exp: "합법적 수단으로 해결이 불가능할 때 행사하는 것이 최후 수단성입니다."
+            },
+            {
+                q: "\"사람 하나라도 부당하게 잡아 가두는 정부 밑에서, 정의로운 사람이 진정 있어야 할 곳은 감옥이다\"라고 주장한 사상가는?",
+                options: ["롤스", "소로", "칸트", "마르크스"],
+                ans: 1,
+                exp: "헨리 데이비드 소로는 저서 '시민의 불복종'에서 위와 같이 주장했습니다."
+            },
+            {
+                q: "근로기준법상 15세 이상 18세 미만인 자의 1일 근로 시간 한도(연장 합의 제외)는?",
+                options: ["6시간", "7시간", "8시간", "9시간"],
+                ans: 1,
+                exp: "연소 근로자의 기준 근로 시간은 1일 7시간, 1주 35시간입니다."
+            },
+            {
+                q: "아리스토텔레스의 정의 중 '각자가 자신이 받아야 할 몫을 공정하게 받도록 하는 것'은?",
+                options: ["분배적 정의", "교정적 정의", "일반적 정의", "절차적 정의"],
+                ans: 0,
+                exp: "사회적 자원을 공정하게 분배하는 원칙은 분배적 정의입니다."
+            },
+            {
+                q: "분배적 정의의 기준 중 '사회적 약자를 보호하여 최대 다수의 인간다운 삶을 보장'하는 장점이 있는 기준은?",
+                options: ["능력", "업적", "필요", "신분"],
+                ans: 2,
+                exp: "필요에 따른 분배는 사회적 약자를 보호하는 데 가장 유리한 기준입니다."
+            },
+            {
+                q: "공동체의 문화, 역사, 전통을 중시하며 구성원이 유대감을 바탕으로 책임과 의무를 다하는 것을 정의로 보는 관점은?",
+                options: ["자유주의적 정의관", "공동체주의적 정의관", "공리주의적 정의관", "개인주의적 정의관"],
+                ans: 1,
+                exp: "공동체주의적 정의관은 공동체에 대한 개인의 책임과 의무를 강조합니다."
+            },
+            {
+                q: "지역 격차 완화를 위해 주요 공공 기관을 지방으로 이전하여 개발하는 도시는?",
+                options: ["기업 도시", "혁신 도시", "생태 도시", "문화 도시"],
+                ans: 1,
+                exp: "공공 기관의 지방 이전을 위해 조성된 도시는 혁신 도시입니다."
+            },
+            {
+                q: "생활 유지 능력이 없거나 생활이 어려운 국민의 최저 생활을 보장하고 자립을 지원하는 제도는?",
+                options: ["사회보험", "공공부조", "사회서비스", "적극적 평등 실현 조치"],
+                ans: 1,
+                exp: "국민 기초 생활 보장 제도와 같은 제도를 공공부조라고 합니다."
+            },
+            {
+                q: "자본주의 전개 과정 중 정부의 시장 개입을 반대하고 '보이지 않는 손'을 강조한 시기는?",
+                options: ["상업 자본주의", "산업 자본주의", "수정 자본주의", "신자유주의"],
+                ans: 1,
+                exp: "18~19세기 산업 자본주의 시기에는 자유방임주의가 지배적이었습니다."
+            },
+            {
+                q: "1970년대 석유 파동 이후 정부의 기능 축소와 민간의 자유로운 경제활동을 강조하며 등장한 것은?",
+                options: ["독점 자본주의", "수정 자본주의", "신자유주의", "사회주의"],
+                ans: 2,
+                exp: "스태그플레이션 위기 극복을 위해 신자유주의가 등장했습니다."
+            },
+            {
+                q: "사유 재산 제도를 바탕으로 민간 경제 주체 간 자유로운 경쟁을 통해 기본적인 경제 문제를 해결하는 경제 체제는?",
+                options: ["계획경제 체제", "시장경제 체제", "혼합경제 체제", "전통경제 체제"],
+                ans: 1,
+                exp: "자본주의와 주로 결합하는 체제가 시장경제 체제입니다."
+            },
+            {
+                q: "사회적으로 불리한 위치에 있는 약자에게 일정한 혜택을 제공하는 제도로, 과도할 경우 역차별의 우려가 있는 것은?",
+                options: ["적극적 평등 실현 조치", "교정적 정의", "사회보험", "지역 격차 완화 정책"],
+                ans: 0,
+                exp: "약자를 배려하는 적극적 평등 실현 조치는 역차별 논란이 발생할 수 있습니다."
+            }
+        ];
+
+        let currentIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        const POINTS_PER_Q = 5;
+
+        // DOM 요소
+        const screenStart = document.getElementById('screen-start');
+        const screenQuiz = document.getElementById('screen-quiz');
+        const screenResult = document.getElementById('screen-result');
+        const formOptions = document.getElementById('options-form');
+        const toastMsg = document.getElementById('toast-msg');
+
+        function startQuiz() {
+            switchScreen(screenStart, screenQuiz);
+            renderQuestion();
+        }
+
+        function switchScreen(hideEl, showEl) {
+            hideEl.classList.remove('fade-enter');
+            hideEl.classList.add('fade-exit');
+            
+            setTimeout(() => {
+                hideEl.classList.add('hidden');
+                hideEl.classList.remove('flex', 'flex-col');
+                
+                showEl.classList.remove('hidden');
+                showEl.classList.add('flex', 'flex-col', 'fade-enter');
+                showEl.classList.remove('fade-exit');
+            }, 300);
+        }
+
+        function renderQuestion() {
+            const data = quizData[currentIndex];
+            
+            // 헤더 & 프로그레스 업데이트
+            document.getElementById('current-q-num').innerText = currentIndex + 1;
+            document.getElementById('progress-fill').style.width = `${((currentIndex + 1) / quizData.length) * 100}%`;
+            
+            // 문제 텍스트 애니메이션 적용하여 변경
+            const qText = document.getElementById('question-text');
+            qText.style.opacity = 0;
+            setTimeout(() => {
+                qText.innerText = data.q;
+                qText.style.opacity = 1;
+                qText.style.transition = 'opacity 0.3s ease';
+            }, 200);
+
+            // 옵션 렌더링
+            formOptions.innerHTML = '';
+            formOptions.style.opacity = 0;
+            
+            data.options.forEach((opt, idx) => {
+                const isChecked = userAnswers[currentIndex] === idx ? 'checked' : '';
+                const html = `
+                    <label class="block relative cursor-pointer group">
+                        <input type="radio" name="q_option" value="${idx}" ${isChecked} onchange="hideToast()">
+                        <div class="option-card flex items-center p-4 border-2 border-slate-200 rounded-2xl bg-white hover:border-violet-300">
+                            <div class="option-marker flex-shrink-0 w-7 h-7 rounded-full border-2 border-slate-300 mr-4 flex items-center justify-center font-bold text-sm text-slate-500 transition-colors group-hover:border-violet-400">
+                                ${idx + 1}
+                            </div>
+                            <span class="text-slate-700 font-medium text-lg">${opt}</span>
+                        </div>
+                    </label>
+                `;
+                formOptions.insertAdjacentHTML('beforeend', html);
+            });
+
+            setTimeout(() => {
+                formOptions.style.opacity = 1;
+                formOptions.style.transition = 'opacity 0.3s ease';
+            }, 250);
+
+            // 버튼 상태 제어
+            document.getElementById('btn-prev').style.display = currentIndex === 0 ? 'none' : 'block';
+            
+            if (currentIndex === quizData.length - 1) {
+                document.getElementById('btn-next').classList.add('hidden');
+                document.getElementById('btn-submit').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-submit').classList.add('hidden');
+            }
+        }
+
+        function hideToast() {
+            toastMsg.classList.add('hidden');
+        }
+
+        function saveAnswer() {
+            const selected = document.querySelector('input[name="q_option"]:checked');
+            if (selected) {
+                userAnswers[currentIndex] = parseInt(selected.value);
+                return true;
+            }
+            return false;
+        }
+
+        function nextQuestion() {
+            if (!saveAnswer()) {
+                toastMsg.classList.remove('hidden');
+                // 흔들림 애니메이션 효과 (선택적)
+                toastMsg.animate([
+                    { transform: 'translateX(0px)' },
+                    { transform: 'translateX(-5px)' },
+                    { transform: 'translateX(5px)' },
+                    { transform: 'translateX(0px)' }
+                ], { duration: 300 });
+                return;
+            }
+            hideToast();
+            currentIndex++;
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            saveAnswer(); // 돌아갈 때도 현재 선택값을 저장
+            hideToast();
+            currentIndex--;
+            renderQuestion();
+        }
+
+        function submitQuiz() {
+            if (!saveAnswer()) {
+                toastMsg.classList.remove('hidden');
+                return;
+            }
+            
+            calculateAndShowResult();
+        }
+
+        function calculateAndShowResult() {
+            let score = 0;
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = ''; // 초기화
+
+            quizData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.ans;
+                if (isCorrect) score += POINTS_PER_Q;
+
+                // 해설 리스트 아이템 생성
+                const statusColor = isCorrect ? 'text-emerald-600' : 'text-rose-600';
+                const statusBg = isCorrect ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200';
+                const icon = isCorrect 
+                    ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+                    : `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+
+                const html = `
+                    <div class="mb-4 p-5 rounded-2xl border ${statusBg} flex flex-col md:flex-row gap-4 shadow-sm">
+                        <div class="flex-shrink-0 pt-1">
+                            ${icon}
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-lg mb-2"><span class="text-sm font-normal text-slate-500 mr-2">Q${idx + 1}.</span>${q.q}</h4>
+                            <div class="flex flex-col gap-1 mb-3 text-sm">
+                                <p class="text-slate-600">나의 답: <span class="font-semibold ${statusColor}">${userAns !== null ? q.options[userAns] : '미선택'}</span></p>
+                                ${!isCorrect ? `<p class="text-slate-600">정답: <span class="font-semibold text-emerald-600">${q.options[q.ans]}</span></p>` : ''}
+                            </div>
+                            <div class="bg-white/60 p-3 rounded-lg text-sm text-slate-700">
+                                <span class="font-semibold mr-1">💡 해설:</span> ${q.exp}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                reviewList.insertAdjacentHTML('beforeend', html);
+            });
+
+            // 점수 UI 업데이트
+            document.getElementById('final-score').innerHTML = `${score}<span class="text-3xl text-slate-400 font-medium ml-1">점</span>`;
+            
+            const msgEl = document.getElementById('score-message');
+            if(score === 100) msgEl.innerText = "🏆 완벽합니다! 통합사회 마스터이시네요!";
+            else if(score >= 80) msgEl.innerText = "👏 아주 훌륭합니다! 조금만 더 다듬으면 완벽해요.";
+            else if(score >= 60) msgEl.innerText = "👍 잘하셨습니다! 틀린 문제를 해설로 복습해보세요.";
+            else msgEl.innerText = "💪 포기하지 마세요! 해설을 꼼꼼히 읽고 다시 도전해보세요.";
+
+            // 화면 전환
+            switchScreen(screenQuiz, screenResult);
+        }
+    </script>
+</body>
+</html>
